@@ -18,7 +18,6 @@ manager = Manager(app)
 def run():
     app.run()
 
-
 @manager.command
 def test():
     """Runs the unit tests."""
