@@ -24,8 +24,23 @@ services:
   #   depends_on:
   #     - kafka
   event-consumer:
-    build: ./tmp/
-    ports:
-      - "5000:5000"
+    build: ./original/
+    # ports:
+    #   - "8000:8000"
     # depends_on:
     #   - kafka
+    networks:
+      - web_nw
+  nginx:
+    image: "nginx:1.13.5"
+    ports:
+      - "8080:80"
+    networks:
+      - web_nw
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+    depends_on: 
+      - event-consumer
+networks:
+  web_nw:
+    driver: bridge
