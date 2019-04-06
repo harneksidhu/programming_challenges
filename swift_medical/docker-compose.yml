@@ -24,9 +24,9 @@ services:
   #   depends_on:
   #     - kafka
   event-consumer:
-    build: ./original/
-    # ports:
-    #   - "8000:8000"
+    build: ./reborn/
+    ports:
+      - "8000:8000"
     # depends_on:
     #   - kafka
     networks:
