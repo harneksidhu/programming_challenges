@@ -1,12 +1,9 @@
-from flask import request
+from flask import request, Blueprint
 
 from ..service.event_service import parse_event
 
-from ..manage import app
+event_splitter = Blueprint('event_splitter', __name__, url_prefix='/')
 
-print('hi')
-print(app)
-
-@app.route('/')
+@event_splitter.route('/')
 def hello():
     return "Hello World!"
