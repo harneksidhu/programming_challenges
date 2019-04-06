@@ -16,7 +16,7 @@ class EventProcessor:
   @abc.abstractmethod
   def deserialize(self):
     schema = self.schema()
-    result = schema.load(self.data)
+    result = schema.load(data=self.data)
     return result
 
   def publish_to_kafka(self, deserialized_object):
