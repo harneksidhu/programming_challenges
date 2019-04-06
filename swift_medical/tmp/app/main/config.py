@@ -16,6 +16,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'flask_boilerplate_main.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SERVER_NAME = '0.0.0.0'
 
 
 class TestingConfig(Config):

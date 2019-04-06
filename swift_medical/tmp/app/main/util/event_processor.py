@@ -2,7 +2,6 @@ import abc
 from .event_schema import MatchActionSchema, PlayerActionSchema
 
 class EventProcessor:
-  
   def __init__(self, data):
     self.data = data
 
@@ -21,7 +20,7 @@ class EventProcessor:
     return result
 
   def publish_to_kafka(self, deserialized_object):
-
+    print(deserialized_object)
 
   def process(self):
     deserialized_object = self.deserialize()
@@ -63,10 +62,15 @@ class EndEvent(EventProcessor):
   def topic(self):
     return 'end'
 
-event_by_name = {
+
+event_processor_by_type = {
   'start': StartEvent,
   'goal': GoalEvent,
   'pass': PassEvent,
   'save': SaveEvent,
   'end': EndEvent
 }
+
+def build_event_processor(data):
+  event_processor = event_processor_by_type[data['event_type']]
+  return event_processor(data)

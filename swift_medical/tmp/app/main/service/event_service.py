@@ -1,7 +1,5 @@
-class EventService:
+from ..util.event_processor import build_event_processor
 
-  def __init__(self, data):
-    self.data = data
-
-  def parse_event(data):
-  	
+def parse_event(data):
+  event_processor = build_event_processor(data)
+  event_processor.process()
