@@ -2,6 +2,11 @@ import abc
 from .event_schema import MatchActionSchema, PlayerActionSchema
 from .kafka import Kafka
 
+class SchemaValidationError(Exception):
+  def __init__(self, arg):
+    self.args = arg
+
+
 class EventProcessor:
   def __init__(self, data):
     self.data = data
@@ -17,6 +22,8 @@ class EventProcessor:
 
   def deserialize(self):
     result = self.schema.load(self.data)
+    if len(result.errors)>0:
+      raise SchemaValidationError(result.errors)
     return result
 
   def publish_to_kafka(self, deserialized_object):
@@ -26,7 +33,6 @@ class EventProcessor:
   def process(self):
     deserialized_object = self.deserialize()
     self.publish_to_kafka(deserialized_object)
-
 
 class StartEvent(EventProcessor):
   def schema(self):
@@ -62,7 +68,6 @@ class EndEvent(EventProcessor):
 
   def topic(self):
     return 'end'
-
 
 event_processor_by_type = {
   'start': StartEvent,

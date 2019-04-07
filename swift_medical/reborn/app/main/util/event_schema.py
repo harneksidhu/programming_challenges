@@ -1,18 +1,18 @@
 from marshmallow import Schema, fields
 
 class FifaEventSchema(Schema):
-  message_id = fields.Str()
-  message_at = fields.DateTime()
-  event_at = fields.DateTime()
-  match_id = fields.Str()
+  message_id = fields.Str(required=True)
+  message_at = fields.DateTime(required=True)
+  event_at = fields.DateTime(required=True)
+  match_id = fields.Str(required=True)
 
 class MatchActionSchema(FifaEventSchema):
-  location = fields.Str()
-  team_1 = fields.Str()
-  team_2 = fields.Str()
+  location = fields.Str(required=True)
+  team_1 = fields.Str(required=True)
+  team_2 = fields.Str(required=True)
 
 class PlayerActionSchema(FifaEventSchema):
-  player_id = fields.Str()
-  player_first_name = fields.Str()
-  player_last_name = fields.Str()
-  player_team = fields.Str()
+  player_id = fields.Str(required=True)
+  player_first_name = fields.Str(required=True)
+  player_last_name = fields.Str(required=True)
+  player_team = fields.Str(required=True)
