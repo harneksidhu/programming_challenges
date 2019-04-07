@@ -16,7 +16,4 @@ RUN apk add --no-cache gcc python3 python3-dev musl-dev && \
 ADD ./app /home/app/
 WORKDIR /home/app/
 
-EXPOSE 5000
-
 ENTRYPOINT ["python3","-u", "app.py"]
-#ENTRYPOINT ["tail", "-f", "/dev/null"]

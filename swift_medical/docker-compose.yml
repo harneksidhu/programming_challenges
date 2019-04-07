@@ -28,7 +28,7 @@ services:
   #   depends_on:
   #     - kafka
   event-splitter:
-    build: ./reborn/
+    build: ./event_splitter/
     ports:
       - "5000:5000"
     depends_on:
