@@ -1,5 +1,6 @@
 import abc
 from .event_schema import MatchActionSchema, PlayerActionSchema
+from flask import current_app as app
 
 class EventProcessor:
   def __init__(self, data):
@@ -16,7 +17,7 @@ class EventProcessor:
   @abc.abstractmethod
   def deserialize(self):
     schema = self.schema()
-    result = schema.load(self.data)
+    result = schema().load(data=self.data)
     return result
 
   def publish_to_kafka(self, deserialized_object):
@@ -72,5 +73,7 @@ event_processor_by_type = {
 }
 
 def build_event_processor(data):
+  app.logger.info("build_event_processor")
+  app.logger.info(data)
   event_processor = event_processor_by_type[data['event_type']]
   return event_processor(data)

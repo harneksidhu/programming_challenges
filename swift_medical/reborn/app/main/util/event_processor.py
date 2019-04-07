@@ -1,9 +1,11 @@
 import abc
 from .event_schema import MatchActionSchema, PlayerActionSchema
+from .kafka import Kafka
 
 class EventProcessor:
   def __init__(self, data):
     self.data = data
+    self.schema = self.schema()()
 
   @abc.abstractmethod
   def schema(self):
@@ -13,14 +15,13 @@ class EventProcessor:
   def topic(self):
     pass
 
-  @abc.abstractmethod
   def deserialize(self):
-    schema = self.schema()
-    result = schema.load(data=self.data)
+    result = self.schema.load(self.data)
     return result
 
   def publish_to_kafka(self, deserialized_object):
-    print(deserialized_object)
+    payload = self.schema.dump(deserialized_object.data)
+    Kafka().publish_event(self.topic(), payload)
 
   def process(self):
     deserialized_object = self.deserialize()
@@ -72,5 +73,7 @@ event_processor_by_type = {
 }
 
 def build_event_processor(data):
+  print('build_event_processor')
+  print(data)
   event_processor = event_processor_by_type[data['event_type']]
   return event_processor(data)
