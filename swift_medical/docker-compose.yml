@@ -1,38 +1,43 @@
 version: '3'
 services:
-  # zookeeper:
-  #   image: confluentinc/cp-zookeeper:5.0.0
-  #   ports:
-  #     - 2181:2181
-  #   environment:
-  #     ZOOKEEPER_CLIENT_PORT: 2181
-  # kafka:
-  #   image: confluentinc/cp-kafka
-  #   depends_on:
-  #     - zookeeper
-  #   ports:
-  #     - 29092:29092
-  #     - 9092:9092
-  #   environment:
-  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT, PLAINTEXT_HOST:PLAINTEXT
-  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092, PLAINTEXT_HOST://localhost:29092
-  #     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-  #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.0.0
+    ports:
+      - 2181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - kafka_nw
+  kafka:
+    image: confluentinc/cp-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+      - 9092:9092
+    environment:
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT, PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092, PLAINTEXT_HOST://localhost:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - kafka_nw
   # event-splitter:
   #   build: ./event_splitter/
   #   depends_on:
   #     - kafka
-  event-consumer:
+  event-splitter:
     build: ./reborn/
     ports:
       - "5000:5000"
-    # depends_on:
-    #   - kafka
+    depends_on:
+      - kafka
     environment:
       - BOILERPLATE_ENV=test
     networks:
       - web_nw
+      - kafka_nw
   nginx:
     image: "nginx:1.13.5"
     ports:
@@ -42,7 +47,9 @@ services:
     volumes:
       - ./conf.d:/etc/nginx/conf.d
     depends_on: 
-      - event-consumer
+      - event-splitter
 networks:
   web_nw:
+    driver: bridge
+  kafka_nw:
     driver: bridge

@@ -4,3 +4,4 @@ Flask-Testing==0.7.1
 gunicorn==19.7.1
 marshmallow==2.19.2
 Flask-Cors==3.0.7
+kafka-python==1.4.6

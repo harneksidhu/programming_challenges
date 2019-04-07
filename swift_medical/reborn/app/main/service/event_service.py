@@ -8,5 +8,5 @@ def parse_event(data):
     return make_response(jsonify(), 200)
   except SchemaValidationError as e:
     return make_response(jsonify(error=e.args), 400)
-  except Exception as e:
-    return make_response(jsonify(error="Internal system error"), 500)
+  # except Exception as e:
+  #   return make_response(jsonify(error="Internal system error"), 500)

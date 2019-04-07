@@ -11,6 +11,6 @@ class Kafka():
   def publish_event(self, topic, payload):
     self.producer.send(topic, payload)
     # block until all async messages are sent
-    producer.flush()
+    self.producer.flush()
     # tidy up the producer connection
-    producer.close()
+    self.producer.close()
