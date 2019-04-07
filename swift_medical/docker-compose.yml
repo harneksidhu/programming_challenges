@@ -23,10 +23,6 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - kafka_nw
-  # event-splitter:
-  #   build: ./event_splitter/
-  #   depends_on:
-  #     - kafka
   event-splitter:
     build: ./event_splitter/
     ports:
@@ -37,6 +33,12 @@ services:
       - BOILERPLATE_ENV=test
     networks:
       - web_nw
+      - kafka_nw
+  event-consumer:
+    build: ./event_consumer/
+    depends_on:
+      - kafka
+    networks:
       - kafka_nw
   nginx:
     image: "nginx:1.13.5"
