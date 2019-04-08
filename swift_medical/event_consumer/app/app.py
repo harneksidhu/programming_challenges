@@ -1,21 +1,27 @@
-from kafka import KafkaConsumer
-import json
+from confluent_kafka import Consumer, TopicPartition, KafkaError
 import requests
+import json
 
-def store_event_to_event_db(payload):
-  r = requests.post('http://event-api:5000/events', data=payload)
-  r.raise_for_status()
+c = Consumer({
+  'bootstrap.servers': 'kafka:9092',
+  'group.id': 'event_consumer',
+  'auto.offset.reset': 'smallest',
+  'enable.auto.commit': 'false'
+})
 
-topics = ['start','goal', 'pass', 'save', 'end']
-consumer = KafkaConsumer(bootstrap_servers=['kafka:9092'], group_id='event_consumer', enable_auto_commit=False, value_deserializer=lambda m: json.loads(m.decode('ascii')))
-consumer.subscribe(topics)
-print("Starting Consumer")
+c.subscribe(['start','goal', 'pass', 'save', 'end'])
+
 while True:
-  for msg in consumer:
-    print("Message received")
-    print(msg)
-    store_event_to_event_db(msg.value[0])
-    print("commit offset")
-    consumer.commit()
-    print("offset comitted")
-consumer.close(autocommit=False)
+  msg = c.poll(1.0)
+  if msg is None:
+    continue
+  if msg.error():
+    print("Consumer error: {}".format(msg.error()))
+    break
+  payload = json.loads(msg.value().decode('ascii'))
+  print('Received message: {} Topic: {} Offset: {}'.format(payload, msg.topic(), msg.offset()))
+  r = requests.post('http://event-api:5000/events', data=payload[0])
+  r.raise_for_status()
+  c.commit(msg)
+
+c.close()

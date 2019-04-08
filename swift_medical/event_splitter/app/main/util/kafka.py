@@ -6,7 +6,8 @@ class Kafka():
   def __init__(self):
     self.producer = KafkaProducer(bootstrap_servers=['kafka:9092'], 
                                   retries=5,
-                                  value_serializer=lambda m: json.dumps(m).encode('ascii'))
+                                  value_serializer=lambda m: json.dumps(m).encode('ascii'),
+                                  api_version=(0,9))
 
   def publish_event(self, topic, payload):
     self.producer.send(topic, payload)
