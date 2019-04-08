@@ -11,7 +11,8 @@ class StateEnum(enum.Enum):
 class FifaEvent(db.Model):
   __tablename__ = "FifaEvent"
 
-  match_id = db.Column(db.String(36), primary_key=True)
+  message_id = db.Column(db.String(36), primary_key=True)
+  match_id = db.Column(db.String(36), nullable=False)
   message_at = db.Column(db.DateTime, nullable=False)
   event_at = db.Column(db.DateTime, nullable=False)
   event_type = db.Column(db.Enum(StateEnum), nullable=False)
