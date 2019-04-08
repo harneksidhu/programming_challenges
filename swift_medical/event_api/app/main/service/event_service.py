@@ -1,5 +1,6 @@
 from flask import make_response, jsonify
 from ..model.event import db, MatchAction, PlayerAction, FifaEvent
+from sqlalchemy import exc
 
 event_model_by_type = {
   'start': MatchAction,
@@ -18,7 +19,7 @@ def save_event(data):
       save_changes(new_event)
       return make_response(jsonify(), 200)
     return make_response(jsonify(), 200)
-  except SQLAlchemyError as e:
+  except exc.SQLAlchemyError as e:
     return make_response(jsonify(error=e.args), 400)
   except Exception as e:
     return make_response(jsonify(error="Internal system error"), 500)

@@ -11,6 +11,10 @@ c = Consumer({
 
 c.subscribe(['start','goal', 'pass', 'save', 'end'])
 
+def submit_request_to_event_api(payload, topic):
+  r = requests.post('http://event-api:5000/events', json={'payload': payload, 'topic': topic})
+  r.raise_for_status()
+
 while True:
   msg = c.poll(1.0)
   if msg is None:
@@ -20,8 +24,9 @@ while True:
     break
   payload = json.loads(msg.value().decode('ascii'))
   print('Received message: {} Topic: {} Offset: {}'.format(payload, msg.topic(), msg.offset()))
-  r = requests.post('http://event-api:5000/events', json={'payload': payload[0], 'topic': msg.topic()})
-  r.raise_for_status()
-  c.commit(msg)
-
+  try:
+    submit_request_to_event_api(payload[0], msg.topic())
+    c.commit(msg)
+  except Exception as e:
+    print(e)
 c.close()
