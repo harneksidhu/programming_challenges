@@ -9,6 +9,7 @@ event_api = Blueprint('event_api', __name__, url_prefix='/')
 @event_api.route('/events', methods=['POST'])
 def events_post():
     app.logger.info("save event")
+    app.logger.info(request.data)
     data = request.json
     app.logger.info(data)
     payload = data['payload']

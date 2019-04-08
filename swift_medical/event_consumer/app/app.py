@@ -20,7 +20,7 @@ while True:
     break
   payload = json.loads(msg.value().decode('ascii'))
   print('Received message: {} Topic: {} Offset: {}'.format(payload, msg.topic(), msg.offset()))
-  r = requests.post('http://event-api:5000/events', data={'payload': payload[0], 'topic': msg.offset()})
+  r = requests.post('http://event-api:5000/events', json={'payload': payload[0], 'topic': msg.topic()})
   r.raise_for_status()
   c.commit(msg)
 
