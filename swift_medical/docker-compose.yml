@@ -25,8 +25,6 @@ services:
       - kafka_nw
   event-splitter:
     build: ./event_splitter/
-    ports:
-      - "5000:5000"
     depends_on:
       - kafka
     environment:
@@ -40,6 +38,12 @@ services:
       - kafka
     networks:
       - kafka_nw
+  event-api:
+    build: ./event_api/
+    environment:
+      - BOILERPLATE_ENV=test
+    networks:
+      - web_nw
   nginx:
     image: "nginx:1.13.5"
     ports:
