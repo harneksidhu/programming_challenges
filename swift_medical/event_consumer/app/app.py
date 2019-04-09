@@ -13,6 +13,7 @@ c.subscribe(['start','goal', 'pass', 'save', 'end'])
 
 def submit_request_to_event_api(payload, topic):
   r = requests.post('http://event-api:5000/events', json={'payload': payload, 'topic': topic})
+  print(r.json())
   r.raise_for_status()
 
 while True:

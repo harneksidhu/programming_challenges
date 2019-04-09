@@ -46,8 +46,8 @@ services:
       - BOILERPLATE_ENV=test
     networks:
       - web_nw
-    ports:
-      - "5000:5000"
+    # ports:
+    #   - "5000:5000"
   nginx:
     image: "nginx:1.13.5"
     ports:
