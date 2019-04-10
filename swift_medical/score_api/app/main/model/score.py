@@ -1,6 +1,5 @@
 import enum
 from flask_sqlalchemy import SQLAlchemy
-import yaml
 import json
 
 db = SQLAlchemy()
@@ -16,4 +15,15 @@ class Match(db.Model):
   match_date = db.Column(db.DateTime, nullable=True)
 
   def as_json(self):
-    return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
+    return {
+      'match_id': self.match_id,
+      'team_1': {
+        'name': self.team_1,
+        'score': self.team_1_score
+      },
+      'team_2': {
+        'name': self.team_2,
+        'score': self.team_2_score
+      },
+      'match_date': str(self.match_date)
+    }

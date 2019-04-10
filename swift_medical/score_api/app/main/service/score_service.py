@@ -8,9 +8,15 @@ from ..util.score_schema import GetScoreSchema
 
 def get_score_data(data):
   app.logger.info(data)
-  result = GetScoreSchema().load(data)
-  if len(result.errors)>0:
+  request_paylod = GetScoreSchema().load(data)
+  if len(request_paylod.errors)>0:
     return make_response(jsonify(error='bad request'), 400)
+  app.logger.info(request_paylod.data)
+  match = Match.query.filter_by(match_id=request_paylod.data['match_id']).first()
+  if not match:
+    return make_response(jsonify(error='match not found'), 404)
+  else:
+    return make_response(jsonify(match.as_json()), 200)
 
 def save_start_event(data):
   try:

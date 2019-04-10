@@ -5,8 +5,6 @@ from flask_cors import CORS
 from .controller.score_controller import score_api
 from .model.score import db
 
-from flask_marshmallow import Marshmallow
-
 def create_app(config_name):
     print("starting app")
     print(config_name)
@@ -14,6 +12,5 @@ def create_app(config_name):
     app.config.from_object(config_by_name[config_name])
     app.register_blueprint(score_api)
     db.init_app(app)
-    ma = Marshmallow(app)
     CORS(app)
-    return (app, ma)
+    return app
