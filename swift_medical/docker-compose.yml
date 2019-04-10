@@ -48,6 +48,14 @@ services:
       - web_nw
     # ports:
     #   - "5000:5000"
+  score-api:
+    build: ./score_api/
+    environment:
+      - BOILERPLATE_ENV=test
+    ports:
+      - "5000:5000"
+    networks:
+      - web_nw
   nginx:
     image: "nginx:1.13.5"
     ports:
