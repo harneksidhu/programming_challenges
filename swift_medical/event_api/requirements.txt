@@ -7,3 +7,5 @@ Flask-Cors==3.0.7
 kafka-python==1.4.6
 Flask-SQLAlchemy==2.3.2
 SQLAlchemy==1.2.0
+pyyaml==5.1
+pytz==2018.9

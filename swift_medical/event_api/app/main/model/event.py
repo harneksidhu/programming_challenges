@@ -1,5 +1,7 @@
 import enum
 from flask_sqlalchemy import SQLAlchemy
+import yaml
+import json
 
 db = SQLAlchemy()
 
@@ -12,7 +14,7 @@ class StateEnum(enum.Enum):
 
 class FifaEvent(db.Model):
   __tablename__ = "FifaEvent"
-
+  
   message_id = db.Column(db.String(36), primary_key=True)
   match_id = db.Column(db.String(36), nullable=False)
   message_at = db.Column(db.DateTime, nullable=False)
@@ -25,3 +27,9 @@ class FifaEvent(db.Model):
   player_first_name = db.Column(db.String(100))
   player_last_name = db.Column(db.String(100))
   player_team = db.Column(db.String(300))
+
+  def as_json(self):
+    return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
+
+  def as_yaml(self):
+    return yaml.dump(self.as_json())

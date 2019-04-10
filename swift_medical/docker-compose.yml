@@ -58,6 +58,7 @@ services:
       - ./conf.d:/etc/nginx/conf.d
     depends_on: 
       - event-splitter
+      - event-api
 networks:
   web_nw:
     driver: bridge
