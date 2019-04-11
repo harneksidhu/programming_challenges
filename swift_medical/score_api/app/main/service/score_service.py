@@ -28,10 +28,14 @@ def save_start_event(data):
       save_changes(match)
       return make_response(jsonify(), 200)
     else:
-      # Handle case where goal event comes first before start event
-      if match.team_1 is deserialized_payload.data['team_2']:
-        match.team_2_score = match.team_1_score
-      match.update(**deserialized_payload.data)
+      # Handle case where goal events come before start event
+      if match.team_1 == deserialized_payload.data['team_2']:
+        team_1_score = match.team_1_score
+        match.team_1_score = match.team_2_score
+        match.team_2_score = team_1_score
+      match.team_1 = deserialized_payload.data['team_1']
+      match.team_2 = deserialized_payload.data['team_2']
+      match.match_date = deserialized_payload.data['match_date']
       save_changes(match)
       return make_response(jsonify(), 200)
   except exc.SQLAlchemyError as e:
@@ -49,18 +53,19 @@ def save_goal_event(data):
   try:
     match = Match.query.filter_by(match_id=deserialized_payload.data['match_id']).first()
     if not match:
-      match = Match({ 
-        'match_id': deserialized_payload.data['match_id'],
-        'team_1': deserialized_payload.data['player_team'],
-        'team_1_score': 1
-      })
+      match = Match( 
+        match_id=deserialized_payload.data['match_id'],
+        team_1=deserialized_payload.data['player_team'],
+        team_1_score=1
+      )
       save_changes(match)
       return make_response(jsonify(), 200)
     else:
-      if match.team_1 is deserialized_payload.data['player_team']:
-        match.team_1_score += match.team_1_score
+      if match.team_1 == deserialized_payload.data['player_team']:
+        match.team_1_score = match.team_1_score + 1
       else:
-        match.team_2_score += match.team_2_score
+        match.team_2 = deserialized_payload.data['player_team']
+        match.team_2_score = match.team_2_score + 1
       save_changes(match)
       return make_response(jsonify(), 200)
   except exc.SQLAlchemyError as e:
