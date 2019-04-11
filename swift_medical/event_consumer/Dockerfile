@@ -4,7 +4,7 @@ FROM alpine:3.7
 
 WORKDIR /home/app/
 
-RUN apk add --no-cache gcc python3 python3-dev musl-dev g++ make bash && \
+RUN apk add --no-cache gcc python3 python3-dev g++ make bash && \
     python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip3 install --upgrade pip setuptools && \
@@ -28,4 +28,3 @@ RUN pip3 install -r requirements.txt
 ADD ./app /home/app/
 
 ENTRYPOINT ["python3","-u", "app.py"]
-#ENTRYPOINT ["tail", "-f", "/dev/null"]

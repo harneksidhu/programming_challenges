@@ -4,7 +4,7 @@ FROM alpine:3.7
 
 WORKDIR /home/app/
 
-RUN apk add --no-cache gcc python3 python3-dev musl-dev g++ make bash && \
+RUN apk add --no-cache gcc python3 python3-dev g++ make bash && \
     python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip3 install --upgrade pip setuptools && \

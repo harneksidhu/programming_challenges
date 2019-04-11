@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from kafka import KafkaProducer
 import json
 
