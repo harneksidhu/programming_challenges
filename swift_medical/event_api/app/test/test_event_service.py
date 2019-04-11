@@ -61,5 +61,35 @@ class TestExportEvent(BaseTestCase):
     response = export_event(payload)
     self.assertEquals(response._status_code, 200)
 
+class TestSaveEvent(BaseTestCase):
+
+  def test_bad_payload(self):
+    payload = {
+      "event_type": "start",
+      "message_at": "2018-09-21T18:04:55+00:00",
+      "event_at": "2018-09-21T18:03:55+00:00",
+      "match_id": "ef4146ee-64e3-430b-b6af-b12671e4beef",
+      "location": "toronto"
+    }
+    response = save_event(payload)
+    self.assertEquals(response.json, dict(error='bad request'))
+    self.assertEquals(response._status_code, 400)
+
+  def test_correct_payload(self):
+    payload = {
+      "event_type": "start",
+      "message_id": "061371f1-eda5-4fea-96ee-436a6dd4f8d7",
+      "message_at": "2018-09-21T18:04:55+00:00",
+      "event_at": "2018-09-21T18:03:55+00:00",
+      "match_id": "ef4146ee-64e3-430b-b6af-b12671e4beef",
+      "location": "toronto",
+      "team_1": "Toronto",
+      "team_2": "Montreal"
+    }
+    response = save_event(payload)
+    event = FifaEvent.query.filter_by(message_id=payload['message_id']).first()
+    self.assertEquals(response._status_code, 200)
+    self.assertTrue(event)
+
 if __name__ == '__main__':
   unittest.main()
