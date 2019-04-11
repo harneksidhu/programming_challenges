@@ -5,9 +5,6 @@ from flask import current_app as app
 import traceback
 from ..util.score_schema import GetScoreSchema, SaveGoalSchema, SaveStartSchema
 
-def create_default_match_object(payload):
-  match = Match(**payload)
-
 def get_score_data(data):
   app.logger.info(data)
   deserialized_payload = GetScoreSchema().load(data)
@@ -31,6 +28,9 @@ def save_start_event(data):
       save_changes(match)
       return make_response(jsonify(), 200)
     else:
+      # Handle case where goal event comes first before start event
+      if match.team_1 is deserialized_payload.data['team_2']:
+        match.team_2_score = match.team_1_score
       match.update(**deserialized_payload.data)
       save_changes(match)
       return make_response(jsonify(), 200)
@@ -42,14 +42,27 @@ def save_start_event(data):
     return make_response(jsonify(error=e.args), 500)
 
 def save_goal_event(data):
+  deserialized_payload = SaveGoalSchema().load(data)
+  if len(deserialized_payload.errors)>0:
+    app.logger.info(deserialized_payload.errors)
+    return make_response(jsonify(error='bad request'), 400)
   try:
-    match = Match.query.filter_by(match_id=data['match_id']).first()
+    match = Match.query.filter_by(match_id=deserialized_payload.data['match_id']).first()
     if not match:
-      data['message_at'] = convert_to_datetime(data['message_at'])
-      data['event_at'] = convert_to_datetime(data['event_at'])
-      new_event = FifaEvent(**data)
-      save_changes(new_event)
-    return make_response(jsonify(), 200)
+      match = Match({ 
+        'match_id': deserialized_payload.data['match_id'],
+        'team_1': deserialized_payload.data['player_team'],
+        'team_1_score': 1
+      })
+      save_changes(match)
+      return make_response(jsonify(), 200)
+    else:
+      if match.team_1 is deserialized_payload.data['player_team']:
+        match.team_1_score += match.team_1_score
+      else:
+        match.team_2_score += match.team_2_score
+      save_changes(match)
+      return make_response(jsonify(), 200)
   except exc.SQLAlchemyError as e:
     app.logger.error(traceback.print_exc())
     return make_response(jsonify(error=e.args), 400)

@@ -2,7 +2,7 @@ from flask import request, Blueprint
 
 from flask import current_app as app
 
-from ..service.score_service import get_score_data, save_start_event
+from ..service.score_service import get_score_data, save_start_event, save_goal_event
 
 score_api = Blueprint('score_api', __name__, url_prefix='/')
 
@@ -17,3 +17,9 @@ def post_start_event():
     app.logger.info("post_start_event")
     data = request.json
     return save_start_event(data)
+
+@score_api.route('/goal', methods=['POST'])
+def post_goal_event():
+    app.logger.info("post_goal_event")
+    data = request.json
+    return save_goal_event(data)
