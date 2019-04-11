@@ -46,8 +46,6 @@ services:
       - BOILERPLATE_ENV=test
     networks:
       - web_nw
-    # ports:
-    #   - "5000:5000"
   score-consumer:
     build: ./score_consumer/
     depends_on:
@@ -60,8 +58,6 @@ services:
     build: ./score_api/
     environment:
       - BOILERPLATE_ENV=test
-    # ports:
-    #   - "5000:5000"
     networks:
       - web_nw
   nginx:

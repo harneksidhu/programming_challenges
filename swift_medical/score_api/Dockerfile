@@ -19,5 +19,4 @@ RUN python3 manage.py create_db
 
 EXPOSE 5000
 
-#ENTRYPOINT ["tail", "-f", "/dev/null"]
 ENTRYPOINT ["python3","-u", "manage.py", "run"]

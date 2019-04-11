@@ -1,34 +1,38 @@
 from flask import make_response, jsonify
 from ..model.event import db, FifaEvent
 from sqlalchemy import exc
-from ..util.utilities import convert_to_datetime
 from flask import current_app as app
 import traceback
+from ..util.event_schema import GetEventSchema, SaveEventSchema
 
-def export_event(event_id, event_format):
+def export_event(payload):
+  deserialized_payload = GetEventSchema().load(payload)
+  if len(deserialized_payload.errors)>0:
+    return make_response(jsonify(error='bad request'), 400)
   try:
-    event = FifaEvent.query.filter_by(message_id=event_id).first()
-    if event:
-      if event_format == 'json':
+    data = deserialized_payload.data
+    event = FifaEvent.query.filter_by(message_id=data['event_id']).first()
+    if not event:
+      return make_response(jsonify(error='event not found'), 404)
+    else:
+      if data['Format'] == 'json':
         response = event.as_json()
         return make_response(jsonify(response), 200)
-      elif event_format == 'yaml':
+      elif data['Format'] == 'yaml':
         response = event.as_yaml()
         return make_response(response, 200)
-      else:
-        return make_response(jsonify(error='bad request'), 400)
-    else: 
-      return make_response(jsonify(error='event not found'), 404)
   except Exception as e:
     app.logger.error(traceback.print_exc())
     return make_response(jsonify(error=e.args), 500)
 
-def save_event(data):
+def save_event(payload):
+  deserialized_payload = SaveEventSchema().load(payload)
+  if len(deserialized_payload.errors)>0:
+    return make_response(jsonify(error='bad request'), 400)
   try:
+    data = deserialized_payload.data
     event = FifaEvent.query.filter_by(message_id=data['message_id']).first()
     if not event:
-      data['message_at'] = convert_to_datetime(data['message_at'])
-      data['event_at'] = convert_to_datetime(data['event_at'])
       new_event = FifaEvent(**data)
       save_changes(new_event)
     return make_response(jsonify(), 200)
