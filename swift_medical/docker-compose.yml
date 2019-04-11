@@ -23,7 +23,7 @@ services:
     depends_on:
       - kafka
     environment:
-      - BOILERPLATE_ENV=test
+      - BOILERPLATE_ENV=dev
     networks:
       - web_nw
       - kafka_nw
@@ -38,7 +38,7 @@ services:
   event-api:
     build: ./event_api/
     environment:
-      - BOILERPLATE_ENV=test
+      - BOILERPLATE_ENV=dev
     networks:
       - web_nw
   score-consumer:
@@ -52,7 +52,7 @@ services:
   score-api:
     build: ./score_api/
     environment:
-      - BOILERPLATE_ENV=test
+      - BOILERPLATE_ENV=dev
     networks:
       - web_nw
   nginx:
