@@ -4,7 +4,7 @@ import json
 
 c = Consumer({
   'bootstrap.servers': 'kafka:9092',
-  'group.id': 'event_consumer',
+  'group.id': 'score_consumer',
   'auto.offset.reset': 'smallest',
   'enable.auto.commit': 'false'
 })
@@ -12,7 +12,7 @@ c = Consumer({
 c.subscribe(['start','goal'])
 
 def submit_request_to_event_api(payload, topic):
-  r = requests.post('http://score-api:5000/{}'.format(topic), json={'payload': payload})
+  r = requests.post('http://score-api:5000/{}'.format(topic), json=payload)
   print(r.json())
   r.raise_for_status()
 

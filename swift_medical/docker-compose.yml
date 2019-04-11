@@ -48,12 +48,20 @@ services:
       - web_nw
     # ports:
     #   - "5000:5000"
+  score-consumer:
+    build: ./score_consumer/
+    depends_on:
+      - kafka
+      - score-api
+    networks:
+      - kafka_nw
+      - web_nw
   score-api:
     build: ./score_api/
     environment:
       - BOILERPLATE_ENV=test
-    ports:
-      - "5000:5000"
+    # ports:
+    #   - "5000:5000"
     networks:
       - web_nw
   nginx:
@@ -67,6 +75,7 @@ services:
     depends_on: 
       - event-splitter
       - event-api
+      - score-api
 networks:
   web_nw:
     driver: bridge

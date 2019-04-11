@@ -65,6 +65,7 @@ def save_goal_event(data):
         match.team_1_score = match.team_1_score + 1
       else:
         match.team_2 = deserialized_payload.data['player_team']
+        # Handle case where goal events come before start event
         match.team_2_score = match.team_2_score + 1
       save_changes(match)
       return make_response(jsonify(), 200)
