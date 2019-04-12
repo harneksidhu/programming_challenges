@@ -77,7 +77,5 @@ event_processor_by_type = {
 }
 
 def build_event_processor(data):
-  print('build_event_processor')
-  print(data)
   event_processor = event_processor_by_type[data['event_type']]
   return event_processor(data)

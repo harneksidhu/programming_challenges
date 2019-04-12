@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 from app.test.base import BaseTestCase
-from app.main.util.event_processor import StartEvent, SchemaValidationError
+from app.main.util.event_processor import build_event_processor, StartEvent, SchemaValidationError
 
 class TestEventProcessor(BaseTestCase):
 
@@ -43,6 +43,22 @@ class TestEventProcessor(BaseTestCase):
     event = StartEvent(payload)
     event.process()
     mock_kafka.return_value.publish_event.assert_called()
+
+class TestBuildEventProcessor(BaseTestCase):
+
+  def test_start_event_creation(self):
+    payload = {
+      "event_type": "start",
+      "message_id": "061371f1-eda5-4fea-96ee-436a6dd4f8d7",
+      "message_at": "2018-09-21T18:04:55+00:00",
+      "event_at": "2018-09-21T18:03:55+00:00",
+      "match_id": "ef4146ee-64e3-430b-b6af-b12671e4beef",
+      "location": "toronto",
+      "team_1": "Toronto",
+      "team_2": "Montreal"
+    }
+    event = build_event_processor(payload)
+    self.assertTrue(isinstance(event, StartEvent))
 
 if __name__ == '__main__':
   unittest.main()
