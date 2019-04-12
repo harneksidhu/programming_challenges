@@ -6,7 +6,6 @@ class SchemaValidationError(Exception):
   def __init__(self, arg):
     self.args = arg
 
-
 class EventProcessor:
   def __init__(self, data):
     self.data = data

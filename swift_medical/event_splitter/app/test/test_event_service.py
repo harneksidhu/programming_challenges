@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from app.main.service.event_service import parse_event
-from app.main.util.event_processor import build_event_processor, SchemaValidationError
 from app.test.base import BaseTestCase
+from app.main.service.event_service import parse_event
+from app.main.util.event_processor import SchemaValidationError
 
 class TestParseEvent(BaseTestCase):
 
