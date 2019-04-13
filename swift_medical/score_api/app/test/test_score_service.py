@@ -50,8 +50,38 @@ class TestSaveStartEvent(BaseTestCase):
     db.session.commit()
     response = save_start_event(payload)
     match = Match.query.filter_by(match_id=1).first()
+    self.assertEquals(response._status_code, 200)
     self.assertEquals(match.team_1, 'Toronto')
     self.assertEquals(match.team_1_score, 1)
+
+class TestSaveGoalEvent(BaseTestCase):
+
+  def test_bad_request(self):
+    response = save_goal_event({})
+    self.assertEquals(response._status_code, 400)
+
+  def test_missing_match(self):
+    payload = {
+      'match_id': '1',
+      'player_team': 'Toronto'
+    }
+    response = save_goal_event(payload)
+    match = Match.query.filter_by(match_id=1).first()
+    self.assertEquals(response._status_code, 200)
+    self.assertEquals(match.team_1, 'Toronto')
+
+  def test_existing_match(self):
+    payload = {
+      'match_id': '1',
+      'player_team': 'Toronto'
+    }
+    match = Match(match_id=1, team_1='Montreal', team_2='Toronto', team_2_score=1)
+    db.session.add(match)
+    db.session.commit()
+    response = save_goal_event(payload)
+    match = Match.query.filter_by(match_id=1).first()
+    self.assertEquals(response._status_code, 200)
+    self.assertEquals(match.team_2_score, 2)
 
 if __name__ == '__main__':
   unittest.main()
