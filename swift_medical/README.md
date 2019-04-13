@@ -15,9 +15,13 @@
 The architecture is built using event-driven principles. Kafka is utilized to organize Fifa events into separate topics. 
 
 `Event Splitter` is responsible for publishing an event into a corresponding Kafka topic
+
 `Event Consumer` is responsible for consuming events from all topics and sending them to `Event API` 
+
 `Event API` is responsible for storing/retrieving raw event data
+
 `Score Consumer` is responsible for consuming events from `start` and `goal` topics and sending them to `Score API`
+
 `Score API` is responsible for managing/retrieving match related data like goals, saves, passes, etc.
 
 ## Environment Setup Instructions
