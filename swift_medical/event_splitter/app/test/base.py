@@ -8,5 +8,5 @@ class BaseTestCase(TestCase):
   """ Base Tests """
 
   def create_app(self):
-    app = create_app('test')
+    app = create_app('unit')
     return app
