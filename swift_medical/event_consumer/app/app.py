@@ -25,9 +25,6 @@ while True:
     break
   payload = json.loads(msg.value().decode('ascii'))
   print('Received message: {} Topic: {} Offset: {}'.format(payload, msg.topic(), msg.offset()))
-  try:
-    submit_request_to_event_api(payload[0], msg.topic())
-    c.commit(msg)
-  except Exception as e:
-    print(e)
+  submit_request_to_event_api(payload[0], msg.topic())
+  c.commit(msg)
 c.close()

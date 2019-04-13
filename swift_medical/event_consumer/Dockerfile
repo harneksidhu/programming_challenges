@@ -1,5 +1,3 @@
-# Basic flask container
-
 FROM alpine:3.7
 
 WORKDIR /home/app/
