@@ -15,7 +15,6 @@ RUN apk add --no-cache gcc python3 python3-dev && \
 
 ADD . /home/app/
 WORKDIR /home/app/
-RUN python3 manage.py create_db
 
 EXPOSE 5000
 
